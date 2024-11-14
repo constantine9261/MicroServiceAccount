@@ -1,15 +1,11 @@
-package com.bank.microserviceAccount.Model.entity;
+package com.bank.microserviceAccount.Model.api.account;
+
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.io.Serializable;
 @Data
 @Builder
-@Document(collection = "bank_accounts") // Nombre de la colección en MongoDB
-public class AccountEntity implements Serializable {
-
+public class BankAccountDto {
     @Id
     private String id; // Identificador único generado por MongoDB
     private String accountNumber; // Número de cuenta único
@@ -19,5 +15,4 @@ public class AccountEntity implements Serializable {
     private int maxTransactions; // Límite de transacciones mensuales (para cuentas de ahorro)
     private double monthlyFee; // Comisión mensual (para cuentas corrientes)
     private String allowedWithdrawalDate; // Fecha permitida para retiro (para cuentas a plazo fijo)
-
 }
