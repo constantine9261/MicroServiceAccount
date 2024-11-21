@@ -13,4 +13,8 @@ public interface IAccountService {
     Flux<BankAccountDto> findAll();
     Mono<BankAccountDto> updateBankAccount(String id, BankAccountRequest request);
     Mono<Void> deleteById(String id);
+
+    Mono<BankAccountDto> createVipAccount(BankAccountRequest request);
+
+    Mono<BankAccountDto> createPymeAccount(BankAccountRequest request);
 }

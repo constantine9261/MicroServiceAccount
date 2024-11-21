@@ -8,7 +8,7 @@
 		<version>3.3.5</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.bank</groupId>
+
 	<artifactId>microserviceAccount </artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>microserviceAccount </name>
@@ -30,6 +30,7 @@
 		<java.version>17</java.version>
 	</properties>
 	<dependencies>
+
 		<!-- Dependencia para WebFlux -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -75,6 +76,26 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<!-- Plugin de Checkstyle -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>3.3.0</version> <!-- Última versión estable -->
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<configLocation>src/main/resources/checkstyle.xml</configLocation>
+					<consoleOutput>true</consoleOutput>
+					<failsOnError>true</failsOnError>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 

@@ -1,11 +1,15 @@
 package com.bank.microserviceAccount.Model.entity;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 @Data
+@NoArgsConstructor // Constructor sin argumentos
+@AllArgsConstructor // Constructor con todos los argumentos
 @Builder
 @Document(collection = "bank_accounts") // Nombre de la colección en MongoDB
 public class AccountEntity implements Serializable {

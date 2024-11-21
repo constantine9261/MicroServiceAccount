@@ -10,7 +10,14 @@ public class WebClientConfig {
     @Bean
     public WebClient customerWebClient() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8080/customers") // Cambia según la URL del CustomerService
+                .baseUrl("http://localhost:8082/customers") // Cambia según la URL del CustomerService
+                .build();
+    }
+
+    @Bean
+    public WebClient customerWebClienttwo() {
+        return WebClient.builder()
+                .baseUrl("http://localhost:8082/") // Cambia según la URL del CustomerService
                 .build();
     }
 }
