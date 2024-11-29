@@ -6,6 +6,8 @@ import com.bank.microserviceAccount.Model.api.account.BankAccountRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 public interface IAccountService {
 
     Mono<BankAccountDto> createBankAccount(BankAccountRequest request);
@@ -17,4 +19,9 @@ public interface IAccountService {
     Mono<BankAccountDto> createVipAccount(BankAccountRequest request);
 
     Mono<BankAccountDto> createPymeAccount(BankAccountRequest request);
+
+    Mono<String> associateDebitCard(String customerId, List<String> accountIds);
+
+    Flux<BankAccountDto> findByCustomerId(String customerId);
+
 }

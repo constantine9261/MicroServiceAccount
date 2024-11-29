@@ -15,4 +15,6 @@ public class BankAccountDto {
     private int maxTransactions; // Límite de transacciones mensuales (para cuentas de ahorro)
     private double monthlyFee; // Comisión mensual (para cuentas corrientes)
     private String allowedWithdrawalDate; // Fecha permitida para retiro (para cuentas a plazo fijo)
+    private boolean debitCardLinked; // Agregar este campo al DTO
+
 }

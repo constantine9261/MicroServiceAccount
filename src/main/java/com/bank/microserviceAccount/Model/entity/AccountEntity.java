@@ -23,5 +23,7 @@ public class AccountEntity implements Serializable {
     private int maxTransactions; // Límite de transacciones mensuales (para cuentas de ahorro)
     private double monthlyFee; // Comisión mensual (para cuentas corrientes)
     private String allowedWithdrawalDate; // Fecha permitida para retiro (para cuentas a plazo fijo)
+    private boolean debitCardLinked; // Indica si la cuenta está vinculada a una tarjeta de débito
+
 
 }

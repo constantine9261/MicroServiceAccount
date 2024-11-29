@@ -46,6 +46,7 @@ public class AccountServiceImpl implements IAccountService {
                 .maxTransactions(entity.getMaxTransactions())
                 .monthlyFee(entity.getMonthlyFee())
                 .allowedWithdrawalDate(entity.getAllowedWithdrawalDate())
+                .debitCardLinked(entity.isDebitCardLinked()) // Asegúrate de incluir esta línea
                 .build();
     }
 
@@ -146,12 +147,13 @@ public class AccountServiceImpl implements IAccountService {
                             .switchIfEmpty(Mono.error(new IllegalArgumentException("Cuenta no encontrada")))
                             .flatMap(existingAccount -> {
                                 existingAccount.setAccountNumber(request.getAccountNumber());
+                                existingAccount.setCustomerId(request.getCustomerId());
                                 existingAccount.setBalance(request.getBalance());
                                 existingAccount.setType(request.getType());
                                 existingAccount.setMaxTransactions(request.getMaxTransactions());
                                 existingAccount.setMonthlyFee(request.getMonthlyFee());
                                 existingAccount.setAllowedWithdrawalDate(request.getAllowedWithdrawalDate());
-
+                                existingAccount.setDebitCardLinked(request.isDebitCardLinked());
                                 return bankAccountRepository.save(existingAccount)
                                         .map(this::convertToDto); // Conversión solo después de la operación de repositorio
                             });
@@ -194,5 +196,34 @@ public class AccountServiceImpl implements IAccountService {
                     return bankAccountRepository.save(accountEntity)
                             .map(this::convertToDto);
                 });
+    }
+
+    @Override
+    public Mono<String> associateDebitCard(String customerId, List<String> accountIds) {
+        return bankAccountRepository.findByCustomerId(customerId)
+                .filter(account -> accountIds.contains(account.getId()))  // Filtrar solo las cuentas correctas
+                .collectList()
+                .flatMap(accounts -> {
+                    if (accounts.isEmpty()) {
+                        return Mono.error(new IllegalArgumentException("No se encontraron cuentas válidas para el cliente."));
+                    }
+
+                    // Asociar la tarjeta de débito a todas las cuentas
+                    accounts.forEach(account -> {
+                        account.setDebitCardLinked(true);  // Asociar la tarjeta a todas las cuentas
+                        log.info("Asociando tarjeta a la cuenta: {}", account.getAccountNumber());  // Log para confirmación
+                    });
+
+                    return bankAccountRepository.saveAll(accounts)
+                            .then(Mono.just("Tarjeta de débito asociada correctamente a todas las cuentas."));
+                });
+    }
+
+
+
+    @Override
+    public Flux<BankAccountDto> findByCustomerId(String customerId) {
+        return bankAccountRepository.findByCustomerId(customerId)
+                .map(this::convertToDto);
     }
 }

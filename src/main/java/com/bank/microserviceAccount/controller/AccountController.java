@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
@@ -123,5 +126,40 @@ public class AccountController {
                 .map(account -> ResponseDtoBuilder.success(account, "Cuenta PYME creada con éxito."))
                 .onErrorResume(e -> Mono.just(ResponseDtoBuilder.error(e.getMessage())));
     }
+
+
+
+
+    @Operation(summary = "Asociar tarjeta de débito", description = "Permite asociar una tarjeta de débito a las cuentas bancarias de un cliente.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Tarjeta de débito asociada con éxito.",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Cliente o cuentas no encontrados."),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos."),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor.")
+    })
+    @PostMapping("/{customerId}/associate-debit-card")
+    public Mono<ResponseDto<String>> associateDebitCard(
+            @PathVariable String customerId,
+            @RequestBody List<String> accountIds) {
+        return bankAccountService.associateDebitCard(customerId, accountIds)
+                .map(response -> ResponseDtoBuilder.success(response, "Tarjeta de débito asociada con éxito."))
+                .onErrorResume(error -> Mono.just(ResponseDtoBuilder.error(error.getMessage())));
+    }
+
+
+    @Operation(summary = "Obtener cuentas de un cliente", description = "Devuelve todas las cuentas bancarias asociadas a un cliente específico.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cuentas obtenidas con éxito"),
+            @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
+    @GetMapping("/customer/{customerId}")
+    public Flux<ResponseDto<BankAccountDto>> getAccountsByCustomerId(@PathVariable String customerId) {
+        return bankAccountService.findByCustomerId(customerId)
+                .map(account -> ResponseDtoBuilder.success(account, "Cuentas encontradas"))
+                .switchIfEmpty(Mono.error(new IllegalArgumentException("No se encontraron cuentas para este cliente")));
+    }
+
 
 }
